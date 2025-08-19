@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -7,6 +9,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -32,6 +35,16 @@ const Register = () => {
       setSuccessMessage('');
     }
   };
+
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        navigate('/login'); // Redireciona para a página de login após o registro
+      }, 1000);
+
+      return () => clearTimeout(timer); // Limpa o timer se o componente for desmontado
+    }
+  }, [successMessage, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
