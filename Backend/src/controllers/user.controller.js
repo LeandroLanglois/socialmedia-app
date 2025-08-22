@@ -19,7 +19,7 @@ export default class UserController {
     } catch (err) {
       return res.status(500).json({ message: 'Erro interno', error: err.message });
     }
-  }
+  };
 
   static async login(req, res) {
     const { email, password } = req.body;
@@ -50,28 +50,10 @@ export default class UserController {
     } catch (err) {
       return res.status(500).json({ message: 'Erro interno', error: err.message });
     }
-  }
+  };
 
   static async getFeed(req, res) {
     try {
-      const authHeader = req.headers.authorization;
-
-      if (!authHeader) {
-        return res.status(401).json({ message: 'Token não fornecido' });
-      }
-
-      const token = authHeader.split(' ')[1];
-      if (!token) {
-        return res.status(401).json({ message: 'Token inválido' });
-      }
-
-      let decoded;
-      try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
-      } catch (err) {
-        return res.status(401).json({ message: 'Token expirado ou inválido' });
-      }
-
       // Buscar postagens do usuário ou do  geral
       const posts = await PostService.getAllPosts(); // implementa no service
 
@@ -79,7 +61,32 @@ export default class UserController {
     } catch (err) {
       return res.status(500).json({ message: 'Erro interno', error: err.message });
     }
-  }
+  };
+
+  static async createPost(req, res) {
+    const { title, description } = req.body;
+
+    try {
+      if (!title || !description) {
+        return res.status(400).json({ error: "Título e descrição são obrigatórios" });
+      }
+
+      const newPost = await PostService.createPost(title, description);
+
+      return res.status(201).json(newPost);
+    } catch (err) {
+      return res.status(500).json({ message: "Erro interno", error: err.message });
+    }
+  };
+
+  static async getAllPosts(req, res) {
+    try {
+      const posts = await PostService.getAllPosts();
+      return res.json(posts);
+    } catch (err) {
+      return res.status(500).json({ message: "Erro interno", error: err.message });
+    }
+  };
   
 
 }

@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Feed from './components/Feed';
 import AuthorizationRoute from './layouts/authorization';
+import NewPost from './components/NewPost';
 
 function App() {
   return (
@@ -11,10 +12,12 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/feed" element={<AuthorizationRoute />}>
-          <Route index element={<Feed />} />
+        
+        {/* Rotas protegidas */}
+        <Route element={<AuthorizationRoute />}>
+          <Route path="/feed" element={<Feed />} />
+          <Route path="/newpost" element={<NewPost />} />
         </Route>
-    
       </Routes>
     </Router>
   );
