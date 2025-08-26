@@ -55,7 +55,7 @@ export default class UserController {
   static async getFeed(req, res) {
     try {
       // Buscar postagens do usuário ou do  geral
-      const posts = await PostService.getAllPosts(); // implementa no service
+      const posts = await UserService.getAllPosts(); // implementa no service
 
       return res.json({ posts });
     } catch (err) {
@@ -64,29 +64,45 @@ export default class UserController {
   };
 
   static async createPost(req, res) {
-    const { title, description } = req.body;
-
     try {
+      const { title, description } = req.body;
+
       if (!title || !description) {
         return res.status(400).json({ error: "Título e descrição são obrigatórios" });
       }
 
-      const newPost = await PostService.createPost(title, description);
+      const newPost = await UserService.createPost({ title, description });
 
       return res.status(201).json(newPost);
     } catch (err) {
+      console.error("Erro no createPost:", err);
       return res.status(500).json({ message: "Erro interno", error: err.message });
     }
-  };
+  }
 
   static async getAllPosts(req, res) {
     try {
-      const posts = await PostService.getAllPosts();
+      const posts = await UserService.getAllPosts();
       return res.json(posts);
     } catch (err) {
       return res.status(500).json({ message: "Erro interno", error: err.message });
     }
   };
-  
+
+  static async getPostById(req, res) {
+    try {
+      const { id } = req.params;
+      const post = await UserService.getPostById(id);
+
+      if (!post) {
+        return res.status(404).json({ message: 'Post não encontrado.' });
+      }
+
+      return res.json(post);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Erro ao buscar o post.' });
+    }
+  };
 
 }

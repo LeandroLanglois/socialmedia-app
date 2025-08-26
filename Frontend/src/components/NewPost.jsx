@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const NewPost = () => {
@@ -6,6 +7,7 @@ const NewPost = () => {
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +23,11 @@ const NewPost = () => {
       setSuccess("Post criado com sucesso!");
       setTitle("");
       setDescription("");
+
+      // Redireciona para o feed após 1 segundo
+      setTimeout(() => {
+        navigate("/feed");
+      }, 1000);
     } catch (err) {
       setError("Erro ao criar post. Tente novamente.");
     }
@@ -32,6 +39,15 @@ const NewPost = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white p-6 rounded-2xl shadow-md"
       >
+        {/* Botão de voltar */}
+        <button
+          type="button"
+          onClick={() => navigate("/feed")}
+          className="text-sm text-blue-500 hover:underline mb-4"
+        >
+          &larr; Voltar para o feed
+        </button>
+
         <h2 className="text-2xl font-bold mb-4 text-center">Criar Novo Post</h2>
 
         {error && <p className="text-red-500 mb-3">{error}</p>}

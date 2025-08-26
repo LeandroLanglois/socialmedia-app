@@ -7,12 +7,8 @@ const routes = Router();
 routes.use('/', userRoutes);
 routes.post('/register', UserController.register);
 routes.post('/login', UserController.login);
-routes.get('/feed', (req, res) => {
-  res.json([
-    { id: 1, title: "Primeiro post", description: "Descrição do post" },
-    { id: 2, title: "Segundo post", description: "Outro post aqui" }
-  ]);
-});
+routes.get('/feed', UserController.getAllPosts);
 routes.post('/newpost', UserController.createPost);
+routes.get('/post/:id', UserController.getPostById);
 
 export default routes;
