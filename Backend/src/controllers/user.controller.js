@@ -105,4 +105,58 @@ export default class UserController {
     }
   };
 
-}
+  static async likePost(req, res) {
+    try {
+      const { postId } = req.params;
+      const userId = req.user.id; // pegar do token JWT futuramente
+      const like = await UserService.likePost(userId, postId);
+      return res.json(like);
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao dar like", error: err.message });
+    }
+  }
+
+  static async dislikePost(req, res) {
+    try {
+      const { postId } = req.params;
+      const userId = req.user.id;
+      const dislike = await UserService.dislikePost(userId, postId);
+      return res.json(dislike);
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao dar dislike", error: err.message });
+    }
+  };
+
+  static async removeLikeDislike(req, res) {
+    try {
+      const { postId } = req.params;
+      const userId = req.user.id;
+      const removed = await UserService.removeLikeDislike(userId, postId);
+      return res.json({ message: "Like/Dislike removido", removed });
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao remover like/dislike", error: err.message });
+    }
+  };
+
+  static async addComment(req, res) {
+    try {
+      const { postId } = req.params;
+      const { content } = req.body;
+      const userId = req.user.id;
+      const comment = await UserService.addComment(userId, postId, content);
+      return res.json(comment);
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao comentar", error: err.message });
+    }
+  };
+
+  static async getComments(req, res) {
+    try {
+      const { postId } = req.params;
+      const comments = await UserService.getComments(postId);
+      return res.json(comments);
+    } catch (err) {
+      return res.status(500).json({ message: "Erro ao buscar comentários", error: err.message });
+    }
+  };
+};

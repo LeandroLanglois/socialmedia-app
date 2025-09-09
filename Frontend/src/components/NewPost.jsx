@@ -48,7 +48,7 @@ const NewPost = () => {
           &larr; Voltar para o feed
         </button>
 
-        <h2 className="text-2xl font-bold mb-4 text-center">Criar Novo Post</h2>
+        <h2 className="text-2xl font-bold mb-2 text-center">Criar Novo Post</h2>
 
         {error && <p className="text-red-500 mb-3">{error}</p>}
         {success && <p className="text-green-500 mb-3">{success}</p>}
