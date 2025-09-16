@@ -1,51 +1,68 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+"use client"
+
+import { useEffect, useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import axios from "axios"
 
 const Post = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [post, setPost] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [post, setPost] = useState(null)
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/post/${id}`);
-        setPost(res.data);
+        const res = await axios.get(`http://localhost:3000/post/${id}`)
+        setPost(res.data)
 
-        const commentsRes = await axios.get(`http://localhost:3000/post/${id}/comments`);
-        setComments(commentsRes.data);
+        const commentsRes = await axios.get(`http://localhost:3000/post/${id}/comments`)
+        setComments(commentsRes.data)
       } catch (err) {
-        setError("Erro ao carregar a publicação, tente novamente.");
+        setError("Erro ao carregar a publicação, tente novamente.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    fetchPost();
-  }, [id]);
+    }
+    fetchPost()
+  }, [id])
 
   const handleCommentSubmit = async (e) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
+    e.preventDefault()
+    if (!newComment.trim()) return
+
+    const token = localStorage.getItem("token")
+    if (!token) {
+      console.error("Token não encontrado. Usuário precisa fazer login.")
+      return
+    }
+
     try {
       const res = await axios.post(
         `http://localhost:3000/post/${id}/comment`,
         { content: newComment },
-        { withCredentials: true }
-      );
-      setComments((prev) => [...prev, res.data]);
-      setNewComment("");
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      setComments((prev) => [...prev, res.data])
+      setNewComment("")
     } catch (err) {
-      console.error("Erro ao comentar", err);
+      console.error("Erro ao comentar", err)
+      if (err.response?.status === 401) {
+        console.error("Token inválido. Usuário precisa fazer login novamente.")
+      }
     }
-  };
+  }
 
   if (loading) {
-    return <p className="text-center mt-10 text-gray-500">Carregando...</p>;
+    return <p className="text-center mt-10 text-gray-500">Carregando...</p>
   }
 
   if (error) {
@@ -59,7 +76,7 @@ const Post = () => {
           Recarregar
         </button>
       </div>
-    );
+    )
   }
 
   return (
@@ -73,9 +90,7 @@ const Post = () => {
 
       <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow border border-gray-200">
         <p className="text-sm text-gray-500 mb-2">Publicado por {post.author}</p>
-        <p className="text-sm text-gray-400 mb-4">
-          {new Date(post.created_at).toLocaleDateString("pt-BR")}
-        </p>
+        <p className="text-sm text-gray-400 mb-4">{new Date(post.created_at).toLocaleDateString("pt-BR")}</p>
         <h1 className="text-2xl font-bold mb-4">{post.title}</h1>
         <p className="text-gray-700 mb-6">{post.description}</p>
 
@@ -89,34 +104,24 @@ const Post = () => {
             placeholder="Escreva um comentário..."
             className="flex-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-          >
+          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
             Enviar
           </button>
         </form>
 
         <div className="space-y-4">
-          {comments.length === 0 && (
-            <p className="text-gray-500">Nenhum comentário ainda.</p>
-          )}
+          {comments.length === 0 && <p className="text-gray-500">Nenhum comentário ainda.</p>}
           {comments.map((comment) => (
-            <div
-              key={comment.id}
-              className="border-b pb-2 border-gray-200"
-            >
+            <div key={comment.id} className="border-b pb-2 border-gray-200">
               <p className="text-sm font-semibold">{comment.user_name}</p>
               <p className="text-gray-600">{comment.content}</p>
-              <p className="text-xs text-gray-400">
-                {new Date(comment.created_at).toLocaleString("pt-BR")}
-              </p>
+              <p className="text-xs text-gray-400">{new Date(comment.created_at).toLocaleString("pt-BR")}</p>
             </div>
           ))}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Post;
+export default Post

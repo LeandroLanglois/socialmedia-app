@@ -1,50 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+"use client"
+
+import { useState, useEffect } from "react"
+import axios from "axios"
+import { Link, useNavigate } from "react-router-dom"
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [user, setUser] = useState(null)
+  const [error, setError] = useState("")
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const response = await axios.post(
-        'http://localhost:3000/login',
-        { email, password }, // axios já converte para JSON
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true, // se estiver usando cookie
-        }
-      );
+      console.log("[v0] Attempting login with:", { email })
 
-      setUser(response.data.user); // ajusta se no backend retorna { user, token }
-      setError('');
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        { email, password },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        },
+      )
+
+      console.log("[v0] Login response:", response.data)
+
+      const { user, token } = response.data
+      console.log("[v0] Received token:", token)
+      console.log("[v0] Token type:", typeof token)
+      console.log("[v0] Token length:", token ? token.length : "null")
+
+      if (token) {
+        localStorage.setItem("token", token)
+        console.log("[v0] Token stored in localStorage")
+
+        const storedToken = localStorage.getItem("token")
+        console.log("[v0] Verified stored token:", storedToken)
+        console.log("[v0] Tokens match:", token === storedToken)
+      } else {
+        console.error("[v0] No token received from server")
+      }
+
+      setUser(user)
+      setError("")
     } catch (err) {
-      setError('Credenciais inválidas');
-      setUser(null);
+      console.error("[v0] Login error:", err.response?.data || err.message)
+      console.error("[v0] Full login error:", err)
+      setError("Credenciais inválidas")
+      setUser(null)
     }
-  };
+  }
 
   useEffect(() => {
     if (user) {
       const timer = setTimeout(() => {
-        navigate('/feed');
-      }, 2000);
+        navigate("/feed")
+      }, 2000)
 
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer)
     }
-  }, [user, navigate]);
+  }, [user, navigate])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm"
-      >
+      <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
 
         <input
@@ -74,21 +95,17 @@ const Login = () => {
 
         {error && <p className="mt-4 text-red-600 text-sm text-center">{error}</p>}
 
-        {user && (
-          <p className="mt-4 text-green-600 text-sm text-center">
-            Bem-vindo, {user.name || 'usuário'}
-          </p>
-        )}
+        {user && <p className="mt-4 text-green-600 text-sm text-center">Bem-vindo, {user.name || "usuário"}</p>}
 
         <p className="mt-6 text-sm text-center">
-          Não tem conta?{' '}
+          Não tem conta?{" "}
           <Link to="/register" className="text-blue-600 hover:underline">
             Cadastre-se
           </Link>
         </p>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
