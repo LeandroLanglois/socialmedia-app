@@ -1,6 +1,5 @@
-# 🚀 Fullstack Social App (Em Desenvolvimento)
-
-Este é um projeto **fullstack** em desenvolvimento que tem como objetivo criar uma plataforma simples de rede social, com autenticação de usuários, sistema de postagens e interação em tempo real.
+# 🚀 Fullstack Social App
+Este é um projeto **fullstack** que tem como objetivo criar uma plataforma simples de rede social, com autenticação de usuários, sistema de postagens e interação em tempo real.
 
 ## 📌 Status do Projeto
 ⚠️ **Em produção / em andamento**  
@@ -31,7 +30,9 @@ Funcionalidades estão sendo implementadas e outras planejadas para as próximas
 - Registro e login de usuários  
 - Autenticação com JWT  
 - Estrutura inicial de frontend com React + Tailwind  
-- Roteamento de páginas (login, registro, feed, novo post)  
+- Roteamento de páginas (login, registro, feed, novo post)
+- Sistemas de likes/dislikes e comentários
+- Pesquisa Rápida de publicações
 
 ---
 
@@ -45,7 +46,6 @@ Funcionalidades estão sendo implementadas e outras planejadas para as próximas
 
 ## 🔮 Próximos passos planejados
 - Upload de imagens (ex: integração com serviço de storage)  
-- Sistema de **likes e comentários**  
 - Paginação estilo **infinite scroll** para o feed  
 - Integração com **Redis** para cache e refresh tokens  
 - Deploy do backend e frontend em ambiente de produção  
